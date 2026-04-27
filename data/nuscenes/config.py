@@ -1,3 +1,5 @@
+from importlib.resources import files
+
 import yaml
 import os
 import os.path as osp
@@ -11,10 +13,11 @@ class Config:
 
     def __init__(self, cfg_id, tmp=False, create_dirs=False):
         self.id = cfg_id
-        cfg_path = '../../data/nuscenes/cfg/%s.yml' % cfg_id
+        cfg_path = os.path.join(os.path.dirname(__file__), 'cfg', f'{cfg_id}.yml')
         files = glob.glob(cfg_path, recursive=True)
-        assert(len(files) == 1)
-        self.yml_dict = EasyDict(yaml.safe_load(open(files[0], 'r')))
+        assert(len(files) >= 1)
+        file = files[0]
+        self.yml_dict = EasyDict(yaml.safe_load(open(file, 'r')))
 
         # data dir
         self.results_root_dir = os.path.expanduser(self.yml_dict['results_root_dir'])

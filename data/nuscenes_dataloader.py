@@ -118,7 +118,7 @@ class data_generator(object):
             for i in range(len(all_traj)):
                 map_traj = scene_map.to_map_points(scene_points[i])
 
-                r = np.clip(np.sqrt(((map_traj[1:] - map_traj[:-1]) ** 2).sum(1)).mean() * 20, a_min=128, a_max=None)
+                r = np.clip(np.sqrt(((map_traj[1:] - map_traj[:-1]) ** 2).sum(1)).mean() * 10, a_min=80, a_max=None)
                 radius.append(np.round(r).astype(int))
                 seq_names.append(seq.seq_name)
             comput_local_homo = (len(self.local_ic[sample_index]) == 0)

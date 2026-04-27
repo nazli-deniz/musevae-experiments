@@ -13,7 +13,7 @@ from torchvision import transforms
 from PIL import Image
 import imageio
 from skimage.transform import resize
-import pickle5
+import pickle as pickle5
 
 logger = logging.getLogger(__name__)
 

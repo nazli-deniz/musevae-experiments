@@ -1,0 +1,10 @@
+datasets/
+*.ckpt
+logs/
+__pycache__/
+*.npy
+*.pt
+*.pyc
+venv/
+*.log
+log.txt

@@ -44,7 +44,8 @@ class Solver(object):
         mkdirs(self.ckpt_dir)
 
         if self.device == 'cuda':
-            self.lg_cvae = torch.load(args.pretrained_lg_path)
+            self.lg_cvae = torch.load(args.pretrained_lg_path,weights_only=False)
+
         else:
             self.lg_cvae = torch.load(args.pretrained_lg_path, map_location='cpu')
 
@@ -151,7 +152,6 @@ class Solver(object):
 
             #-------- map encoding from lgvae --------
             unet_enc_feat = self.lg_cvae.unet.down_forward(obs_heat_map)
-
             #-------- trajectories --------
             (hx, mux, log_varx) \
                 = self.encoderMx(obs_traj_st, seq_start_end, unet_enc_feat, local_homo, train=True)

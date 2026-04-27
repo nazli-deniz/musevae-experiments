@@ -60,8 +60,11 @@ class heatmap_generation(object):
         map_size = local_map.shape[0]
         half = self.heatmap_size // 2
         if map_size < self.heatmap_size:
-            heatmap = np.zeros_like(local_map)
-            heatmap[local_ic[0], local_ic[1]] = 1
+            heatmap = np.zeros((local_map.shape[0], local_map.shape[1]))
+            h, w = heatmap.shape
+            local_ic_clipped = [np.clip(local_ic[0], 0, h-1), np.clip(local_ic[1], 0, w-1)]
+            heatmap[local_ic_clipped[0], local_ic_clipped[1]] = 1
+            ##
             heatmap = ndimage.filters.gaussian_filter(heatmap, sigma=2)
             extended_map = np.zeros((self.heatmap_size, self.heatmap_size))
             extended_map[half - map_size // 2:half + map_size // 2,half - map_size // 2:half + map_size // 2] = heatmap

@@ -56,13 +56,14 @@ class GeometricMap(Map):
         return (np.transpose(self.data, (2, 1, 0))).astype(np.uint)
 
     def get_padded_map(self, padding_x, padding_y):
-        data = 1 - self.data / 255
-        data[0][np.where(data[1] == 0)] = 0.3
-        data[0][np.where(data[2] == 0)] = 0.6
-        self._last_padded_map = np.full((self.data.shape[1] + 2 * padding_x,
-                                         self.data.shape[2] + 2 * padding_y),
-                                        1, dtype=np.float32)
-        self._last_padded_map[padding_x:-padding_x, padding_y:-padding_y] = data[0]
+        walkways  = ((self.data[0] == 255) & (self.data[1] == 0) & (self.data[2] == 0)).astype(np.float32)
+        crossings = ((self.data[0] == 0) & (self.data[1] == 255) & (self.data[2] == 255)).astype(np.float32)
+        ped_map = np.clip(walkways * 0.5 + crossings * 1.0, 0, 1)
+        
+        self._last_padded_map = np.full((self.data.shape[1] + 2*padding_x,
+                                  self.data.shape[2] + 2*padding_y),
+                                 0, dtype=np.float32)
+        self._last_padded_map[padding_x:-padding_x, padding_y:-padding_y] = ped_map
         return self._last_padded_map
 
     @staticmethod

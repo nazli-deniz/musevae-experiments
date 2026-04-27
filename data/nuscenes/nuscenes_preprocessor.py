@@ -17,7 +17,7 @@ class preprocess(object):
         self.phase = phase
         self.log = log
 
-        if parser.dataset == 'nuscenes_pred':
+        if parser.dataset in ['nuscenes_pred', 'nuScenes']:
             label_path = os.path.join(data_root, 'label/{}/{}.txt'.format(split, seq_name))
             delimiter = ' '
         elif parser.dataset in {'eth', 'hotel', 'univ', 'zara1', 'zara2'}:
@@ -27,7 +27,7 @@ class preprocess(object):
             assert False, 'error'
 
         self.gt = np.genfromtxt(label_path, delimiter=delimiter, dtype=str)
-        frames = self.gt[:, 0].astype(np.float32).astype(np.int)
+        frames = self.gt[:, 0].astype(np.float32).astype(int)
         fr_start, fr_end = frames.min(), frames.max()
         self.init_frame = fr_start
         self.num_fr = fr_end + 1 - fr_start
@@ -218,7 +218,7 @@ class preprocess(object):
         self.phase = phase
         self.log = log
 
-        if parser.dataset == 'nuscenes_pred':
+        if parser.dataset in ['nuscenes_pred', 'nuScenes']:
             label_path = os.path.join(data_root, 'label/{}/{}.txt'.format(split, seq_name))
             delimiter = ' '
         elif parser.dataset in {'eth', 'hotel', 'univ', 'zara1', 'zara2'}:
@@ -228,7 +228,7 @@ class preprocess(object):
             assert False, 'error'
 
         self.gt = np.genfromtxt(label_path, delimiter=delimiter, dtype=str)
-        frames = self.gt[:, 0].astype(np.float32).astype(np.int)
+        frames = self.gt[:, 0].astype(np.float32).astype(int)
         fr_start, fr_end = frames.min(), frames.max()
         self.init_frame = fr_start
         self.num_fr = fr_end + 1 - fr_start
@@ -246,6 +246,7 @@ class preprocess(object):
         for row_index in range(len(self.gt)):
             self.gt[row_index][2] = class_names[self.gt[row_index][2]]
         self.gt = self.gt.astype('float32')
+        self.gt = self.gt[(self.gt[:, 2] == 1)]
         self.xind, self.zind = 13, 15
 
     def GetID(self, data):
@@ -286,7 +287,7 @@ class preprocess(object):
         return valid_id
 
     def get_pred_mask(self, cur_data, valid_id):
-        pred_mask = np.zeros(len(valid_id), dtype=np.int)
+        pred_mask = np.zeros(len(valid_id), dtype=int)
         for i, idx in enumerate(valid_id):
             pred_mask[i] = cur_data[cur_data[:, 1] == idx].squeeze()[-1]
         return pred_mask

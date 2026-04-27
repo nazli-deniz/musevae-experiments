@@ -44,7 +44,7 @@ class Solver(object):
         self.make_heatmap = hg.make_heatmap
         self.make_one_heatmap = hg.make_one_heatmap
 
-
+    
     def all_evaluation(self):
         self.set_mode(train=False)
         all_ade =[]
@@ -67,10 +67,12 @@ class Solver(object):
             all_ade=torch.cat(all_ade, dim=1).cpu().numpy()
             all_fde=torch.cat(all_fde, dim=1).cpu().numpy()
 
-            ade_min = np.min(all_ade, axis=0).mean()/self.pred_len
-            fde_min = np.min(all_fde, axis=0).mean()
-        return ade_min, fde_min
+            #ade_min = np.min(all_ade, axis=0).mean()/self.pred_len
+            #fde_min = np.min(all_fde, axis=0).mean()
+            ade_min = all_ade.mean()/self.pred_len
+            fde_min = all_fde.mean()
 
+        return ade_min, fde_min
 
     def compute(self, batch):
         (obs_traj, fut_traj, obs_traj_st, fut_vel_st, seq_start_end,
@@ -225,11 +227,11 @@ class Solver(object):
             'lg_cvae.pt'
         )
         if self.device == 'cuda':
-            self.encoderMx = torch.load(encoderMx_path)
-            self.encoderMy = torch.load(encoderMy_path)
-            self.decoderMy = torch.load(decoderMy_path)
-            self.lg_cvae = torch.load(lg_cvae_path)
-            self.sg_unet = torch.load(sg_unet_path)
+            self.encoderMx = torch.load(encoderMx_path, weights_only=False)
+            self.encoderMy = torch.load(encoderMy_path, weights_only=False)
+            self.decoderMy = torch.load(decoderMy_path, weights_only=False)
+            self.lg_cvae = torch.load(lg_cvae_path, weights_only=False)
+            self.sg_unet = torch.load(sg_unet_path, weights_only=False)
         else:
             self.encoderMx = torch.load(encoderMx_path, map_location='cpu')
             self.encoderMy = torch.load(encoderMy_path, map_location='cpu')

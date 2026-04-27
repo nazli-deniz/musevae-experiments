@@ -59,9 +59,9 @@ class Solver(object):
                                                  no_convs_per_block=1, beta=self.lg_kl_weight).to(self.device)
             elif args.model_name == 'lg_cvae':
                 if self.device == 'cuda':
-                    self.lg_cvae = torch.load(args.pretrained_lg_path).to(self.device)
+                    self.lg_cvae = torch.load(args.pretrained_lg_path, weights_only=False).to(self.device)
                 else:
-                    self.lg_cvae = torch.load(args.pretrained_lg_path, map_location='cpu')
+                    self.lg_cvae = torch.load(args.pretrained_lg_path, map_location='cpu', weights_only=False)
                 print('>>> lg_ae loaded from ', args.pretrained_lg_path)
                 ## random init after latent space
                 for m in self.lg_cvae.unet.upsampling_path:
