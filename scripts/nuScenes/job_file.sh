@@ -1,7 +1,7 @@
 #!/bin/bash
 #OAR -q abaca
 #OAR -l host=1/gpu=1,walltime=20:00:00
-#OAR -p "gpu-20GB AND gpu_compute_capability_major>=7"
+#OAR -p 'gpu-20GB AND gpu_compute_capability_major>=7'
 #OAR -O /home/ffranco/logs/full_pipeline_%jobid%.out
 #OAR -E /home/ffranco/logs/full_pipeline_%jobid%.err
 
