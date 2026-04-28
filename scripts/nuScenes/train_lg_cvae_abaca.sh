@@ -1,0 +1,20 @@
+python main.py \
+    --run_id 1 \
+    --model_name lg_cvae \
+    --device cuda \
+    --batch_size 8 \
+    --lr 1e-4 \
+    --ckpt_load_iter 0 \
+    --max_iter 38948 \
+    --ckpt_dir ckpts \
+    --dt 0.5 \
+    --obs_len 4 \
+    --pred_len 12 \
+    --dataset_dir "" \
+    --dataset_name nuScenes \
+    --scale 1.0 \
+    --heatmap_size 192 \
+    --anneal_epoch 10 \
+    --pretrained_lg_path ../../ckpts/pretrained_models_nuScenes/lg_ae.pt \
+    --w_dim 10 \
+    --fb 3.0
