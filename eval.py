@@ -1,3 +1,4 @@
+from sympy import sec
 from model import *
 import torch.nn.functional as nnf
 
@@ -64,13 +65,21 @@ class Solver(object):
                     all_ade.append(ade)
                     all_fde.append(fde)
 
-            all_ade=torch.cat(all_ade, dim=1).cpu().numpy()
-            all_fde=torch.cat(all_fde, dim=1).cpu().numpy()
+
+            all_ade =torch.cat(all_ade, dim=2).cpu().numpy()
+            all_fde=torch.cat(all_fde, dim=2).cpu().numpy()
+
+            for i, sec in enumerate([1, 2, 3, 4, 5, 6]):
+                ade_min = np.min(all_ade[:, i, :], axis=0).mean()
+                fde_min = np.min(all_fde[:, i, :], axis=0).mean()
+                print(f'{sec}s -> ADE: {ade_min:.4f}, FDE: {fde_min:.4f}')
+
+            ade_min = np.min(all_ade[:, -1, :], axis=0).mean()
+            fde_min = np.min(all_fde[:, -1, :], axis=0).mean()
+
 
             #ade_min = np.min(all_ade, axis=0).mean()/self.pred_len
             #fde_min = np.min(all_fde, axis=0).mean()
-            ade_min = all_ade.mean()/self.pred_len
-            fde_min = all_fde.mean()
 
         return ade_min, fde_min
 
@@ -194,14 +203,20 @@ class Solver(object):
         ade, fde = [], []
         for dist in fut_rel_pos_dists:
             pred_fut_traj = integrate_samples(dist.rsample() * self.scale, obs_traj[-1, :, :2], dt=self.dt)
-            ade.append(displacement_error(
-                pred_fut_traj, fut_traj[:, :, :2], mode='raw'
-            ))
-            fde.append(final_displacement_error(
-                pred_fut_traj[-1], fut_traj[-1, :, :2], mode='raw'
-            ))
-        ade = torch.stack(ade)
-        fde = torch.stack(fde)
+            # pred_fut_traj shape: [pred_len, batch, 2]
+            per_step_ade = []
+            per_step_fde = []
+            for steps in [2, 4, 6, 8, 10, 12]:  # 1s to 6s
+                per_step_ade.append(displacement_error(
+                    pred_fut_traj[:steps], fut_traj[:steps, :, :2], mode='raw'
+                ) / steps)
+                per_step_fde.append(final_displacement_error(
+                    pred_fut_traj[steps-1], fut_traj[steps-1, :, :2], mode='raw'
+                ))
+            ade.append(torch.stack(per_step_ade)) 
+            fde.append(torch.stack(per_step_fde))
+        ade = torch.stack(ade) 
+        fde = torch.stack(fde) 
         return ade, fde
 
 
