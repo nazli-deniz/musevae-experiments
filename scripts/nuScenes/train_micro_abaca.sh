@@ -1,3 +1,4 @@
+#!/bin/bash
 python main.py \
     --run_id 1 \
     --model_name micro \

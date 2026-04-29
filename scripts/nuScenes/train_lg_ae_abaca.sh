@@ -1,4 +1,15 @@
-python main.py \
+#!/bin/bash
+set -ex
+
+cd /home/ffranco/code/musevae-experiments
+
+echo "ENV=$CONDA_DEFAULT_ENV"
+which python
+python --version
+nvidia-smi
+ls -lh /home/ffranco/datasets/nuScenes
+
+python -u main.py \
     --run_id 1 \
     --model_name lg_ae \
     --device cuda \

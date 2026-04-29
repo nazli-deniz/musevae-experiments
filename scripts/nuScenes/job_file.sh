@@ -5,13 +5,11 @@
 #OAR -O /home/ffranco/logs/full_pipeline_%jobid%.out
 #OAR -E /home/ffranco/logs/full_pipeline_%jobid%.err
 
-set -e
+set -ex
 
 cd /home/ffranco/code/musevae-experiments
-mkdir -p /home/ffranco/logs ckpts
 
 module load conda/23.5.0
-source $(conda info --base)/etc/profile.d/conda.sh
 conda activate trajdiff39
 
 echo "===== 1. LG_AE ====="
